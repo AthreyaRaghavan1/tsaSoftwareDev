@@ -1,33 +1,36 @@
+
+
 import 'package:flutter/material.dart';
-import 'package:sklite/SVM/SVM.dart';
-import 'package:sklite/utils/io.dart';
-import 'dart:convert';
+import 'package:get/route_manager.dart';
+import 'package:tsasoftwaredev/InputScreen.dart';
+import 'package:tsasoftwaredev/Login.dart';
+import 'package:tsasoftwaredev/LoginMore.dart';
 
-void main() => runApp(new MaterialApp(
-  home: new HomePage(),
-  debugShowCheckedModeBanner: false)
-);
 
-class HomePage extends StatefulWidget {
-  @override
-  _HomePageState createState() {
-    return new _HomePageState();
-  }
-}
+void main() => runApp(new AgriApp());
 
-class _HomePageState extends State<HomePage> {
-  SVC svc;
-
-  _HomePageState() {
-    loadModel("assets/svcmnist.json").then((x) {
-      this.svc = SVC.fromMap(json.decode(x));
-    });
-  }
-
-  @override
+class AgriApp extends StatelessWidget {
+  const AgriApp({super.key});
+  @override 
   Widget build(BuildContext context) {
-    return Scaffold(
-        // add any widget with svc.predict() callback
+
+  
+    return GetMaterialApp(
+      title:'AgriApp', 
+      theme: ThemeData.dark().copyWith(
+          scaffoldBackgroundColor: const Color.fromARGB(255, 18, 32, 47),
+      ),
+      getPages: [
+        GetPage(name: '/Login', page: () => Login()),
+
+        GetPage(name:'/LoginMore', page: () => LoginMore()),
+
+        GetPage(name: '/InputScreen', page: () => Inputscreen()),
+      ],
+      initialRoute: '/Login',
     );
-  }
+  }  
+
+
 }
+
