@@ -158,7 +158,7 @@ class _AndroidCompact2 extends State<AndroidCompact2> {
                     child: Container(
                       width: double.infinity,
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 24, vertical: 10),
+                          horizontal: 24, vertical: 1),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.center,

@@ -1,6 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/route_manager.dart';
+import 'package:http/http.dart' as http;
+
+import 'InputScreenController.dart';
 
 class Inputscreen extends StatefulWidget {
   @override
@@ -8,14 +14,186 @@ class Inputscreen extends StatefulWidget {
 }
 
 class _InputScreen extends State<Inputscreen> {
+  Inputscreencontroller controller = Get.put(Inputscreencontroller());
+  final int numFields = 7;
+  late List<TextEditingController> controllers;
+  void initState() {
+    super.initState();
+    controllers = List.generate(
+      numFields,
+      (index) => TextEditingController(),
+    );
+  }
+
+  void dispose() {
+    for (var controller in controllers) {
+      controller.dispose();
+    }
+
+    super.dispose();
+  }
+
+  String url = ' ';
+
+  String N = 'N0';
+  String P = 'P0';
+  String K = 'K0';
+  String pH = 'A7';
+  String T = 'T50';
+  String H = 'H12';
+  String R = 'R12';
+  String data = '';
+  String output = '';
+  String constructUrl() {
+    return 'http://127.0.0.1:5000/api?query=' + N + P + K + pH + T + H + R;
+  }
+
+  fetchdata(String url) async {
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      return response.body; // Adjust if your API returns JSON
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      leading: Icon(Icons.menu),
-      title: Text("Soil Input Data"),
-      centerTitle: true,
+    return MaterialApp(
+      title: "Soil Info",
+      theme: ThemeData.dark().copyWith(
+        scaffoldBackgroundColor: const Color.fromARGB(255, 18, 32, 47),
+      ),
+      home: Scaffold(
+        appBar: AppBar(
+          leading: Icon(Icons.menu),
+          title: Text("Soil Input Data"),
+          centerTitle: true,
+        ),
+        body: Column(
+          children: [
+            SizedBox(
+              height: 400,
+              width: 40,
+            ),
+            TextField(
+              controller: controllers[0],
+              onChanged: (value) {
+                N = 'N' + value.toString();
+              },
+              decoration: InputDecoration(
+                labelText: "Enter Nitrogen Content",
+                border: OutlineInputBorder(),
+                fillColor: Colors.white,
+                filled: false, // Sets the background color
+              ),
+            ),
+            TextField(
+              controller: controllers[1],
+              onChanged: (value) {
+                P = 'P' + value.toString();
+              },
+              decoration: InputDecoration(
+                labelText: "Enter Phosphorus Content",
+                border: OutlineInputBorder(),
+                fillColor: Colors.white,
+                filled: false, // Sets the background color
+              ),
+            ),
+            TextField(
+              controller: controllers[2],
+              onChanged: (value) {
+                K = 'K' + value.toString();
+              },
+              decoration: InputDecoration(
+                labelText: "Enter Potassium Content",
+                border: OutlineInputBorder(),
+                fillColor: Colors.white,
+                filled: false, // Sets the background color
+              ),
+            ),
+            TextField(
+              controller: controllers[3],
+              onChanged: (value) {
+                pH = 'A' + value.toString();
+              },
+              decoration: InputDecoration(
+                labelText: "Enter  pH",
+                border: OutlineInputBorder(),
+                fillColor: Colors.white,
+                filled: false, // Sets the background color
+              ),
+            ),
+            TextField(
+              controller: controllers[4],
+              onChanged: (value) {
+                T = 'T' + value.toString();
+              },
+              decoration: InputDecoration(
+                labelText: "Enter Temperature",
+                border: OutlineInputBorder(),
+                fillColor: Colors.white,
+                filled: false, // Sets the background color
+              ),
+            ),
+            TextField(
+              controller: controllers[5],
+              onChanged: (value) {
+                H = 'H' + value.toString();
+              },
+              decoration: InputDecoration(
+                labelText: "Enter Humidity",
+                border: OutlineInputBorder(),
+                fillColor: Colors.white,
+                filled: false, // Sets the background color
+              ),
+            ),
+            TextField(
+              controller: controllers[6],
+              onChanged: (value) {
+                R = 'R' + value.toString();
+              },
+              decoration: InputDecoration(
+                labelText: "Enter Rainfal",
+                border: OutlineInputBorder(),
+                fillColor: Colors.white,
+                filled: false, // Sets the background color
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                try {
+                  // Construct URL with the latest inputs
+                  url = constructUrl();
+                  print("Constructed URL: $url");
+
+                  // Fetch data from the API
+                  data = await fetchdata(url);
+
+                  // Decode JSON response
+                  var decoded = jsonDecode(data);
+
+                  // Update the UI with the predicted crop
+                  setState(() {
+                    output = decoded['predicted_crop'].toString();
+                  });
+
+                  print("Predicted Crop: $output");
+                } catch (error) {
+                  // Handle errors (e.g., network issues, invalid JSON)
+                  print("Error fetching data: $error");
+                  setState(() {
+                    output = "Error fetching data. Please try again.";
+                  });
+                }
+              },
+              child: Text('Optimized Plant for Soil'),
+            ),
+            Text(output),
+          ],
+        ),
+      ),
     );
-    
   }
 
   /*
