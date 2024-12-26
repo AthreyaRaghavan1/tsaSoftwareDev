@@ -8,7 +8,7 @@ import os
 
 app = Flask(__name__) 
 CORS(app)# Initialize the flask App
-model = pickle.load(open('Flask/model.pkl', 'rb')) # Load the trained model
+model = pickle.load(open('model.pkl', 'rb')) # Load the trained model
 
 @app.route('/api', methods = ['GET']) # Homepage---Now API
 def predict():
@@ -31,7 +31,7 @@ def predict():
     final_features = np.array([[N, P, K, ph, temperature, humidity, rainfall]])
     final_scaled = scaler.fit_transform(final_features)
     label_encoder = LabelEncoder()
-    data = pd.read_csv('Flask/crop_recommendation.csv')
+    data = pd.read_csv('crop_recommendation.csv')
     data['crop_name'] = label_encoder.fit_transform(data['crop_name'])
     prediction = model.predict(final_scaled)  # Make a prediction
     crop_prediction = label_encoder.inverse_transform(prediction)

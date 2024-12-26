@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:get/route_manager.dart';
 import 'package:http/http.dart' as http;
 
-import 'InputScreenController.dart';
+
 
 class Inputscreen extends StatefulWidget {
   @override
@@ -14,7 +14,6 @@ class Inputscreen extends StatefulWidget {
 }
 
 class _InputScreen extends State<Inputscreen> {
-  Inputscreencontroller controller = Get.put(Inputscreencontroller());
   final int numFields = 7;
   late List<TextEditingController> controllers;
   void initState() {
@@ -38,10 +37,10 @@ class _InputScreen extends State<Inputscreen> {
   String N = 'N0';
   String P = 'P0';
   String K = 'K0';
-  String pH = 'A7';
+  String pH = 'A0';
   String T = 'T50';
-  String H = 'H12';
-  String R = 'R12';
+  String H = 'H0';
+  String R = 'R0';
   String data = '';
   String output = '';
   String constructUrl() {
@@ -73,7 +72,7 @@ class _InputScreen extends State<Inputscreen> {
         body: Column(
           children: [
             SizedBox(
-              height: 400,
+              height: 200,
               width: 40,
             ),
             TextField(
@@ -154,7 +153,7 @@ class _InputScreen extends State<Inputscreen> {
                 R = 'R' + value.toString();
               },
               decoration: InputDecoration(
-                labelText: "Enter Rainfal",
+                labelText: "Enter Rainfall",
                 border: OutlineInputBorder(),
                 fillColor: Colors.white,
                 filled: false, // Sets the background color
